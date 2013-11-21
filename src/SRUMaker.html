@@ -13,7 +13,7 @@
                         Namn: <input type='text' name='namn' /><br/>
                         PostNr: <input type='text' name='postNr' /><br/>
                         PostOrt: <input type='text' name='postOrt' /><br/>
-                        <input type='button' value='Generera SRU' onClick='javascript:skapaSruFiler(this.form)' />
+                        <input type='button' value='Generera INFRO SRU' onClick='javascript:skapaInfoSruFil(this.form)' />
                 </form>
 
 
@@ -44,7 +44,7 @@
                         var fil = new Fil();
                         var nuvrandeBlankett = null;
 
-                        function skapaSruFiler(form) {
+                        function skapaInfoSruFil(form) {
 
                                 var infoSru = genereraInfoSru(form[0].value,
                                                               form[1].value,
@@ -97,9 +97,11 @@
                                         var label = document.createElement('label');
                                         label.for = uppgift['id'];
                                         label.innerText = uppgift['namn'];
+                                        label.title = uppgift['id'];
                                         var input = document.createElement('input');
                                         input.name = uppgift['id'];
                                         input.id = uppgift['id'];
+                                        input.title = uppgift['id'];
                                         td.appendChild(label);
                                         td.appendChild(input);
                                         tr.appendChild(td);
