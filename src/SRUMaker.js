@@ -9,8 +9,8 @@ function Databeskrivning() {
         var innehåll = [];
         innehåll.push(this.databeskrivningStart());
         innehåll.push(this.produkt());
-        innehåll.push(this.period());
         innehåll.push(this.skapad());
+        innehåll.push(this.program());
         innehåll.push(this.filnamn());
         innehåll.push(this.databeskrivningSlut());
         return innehåll;
@@ -31,11 +31,7 @@ function Databeskrivning() {
     }
 
     this.produkt = function() {
-            return "#PRODUKT SRU2013";
-    }
-
-    this.period = function() {
-            return "#PERIOD 2013";
+            return "#PRODUKT SRU";
     }
 
     this.program = function() {

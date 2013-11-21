@@ -27,11 +27,7 @@ describe("Databeskrivning", function() {
                 });
 
                 it("Ska ha produkt som SRU2013", function() {
-                        expect(databeskrivning.produkt()).toEqual("#PRODUKT SRU2013");
-                });
-
-                it("Ska ha perioden", function() {
-                        expect(databeskrivning.period()).toEqual("#PERIOD 2013");
+                        expect(databeskrivning.produkt()).toEqual("#PRODUKT SRU");
                 });
 
                 it("Ska ha program som SRU-Maker", function() {
@@ -84,6 +80,7 @@ describe("Medieleverantören", function() {
 describe("Info SRU ska gå att generera", function() {
         it("Generera INFO_SRU", function() {
                 var infoSru = genereraInfoSru("198105198256", "Björn Palmqvist", "90629", "Umeå");
+                expect(infoSru).toMatch(/#PROGRAM [a-zA-ZåÅäÄöÖ ]+/);
                 expect(infoSru).toMatch(/#ORGNR 198105198256/);
                 expect(infoSru).toMatch(/#NAMN Björn Palmqvist/);
                 expect(infoSru).toMatch(/#POSTORT Umeå/);
