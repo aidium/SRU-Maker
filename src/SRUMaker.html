@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+        <head>
+                <title>SRU Maker</title>
+                <script type="text/javascript" src="SRUMaker.js"></script>
+        </head>
+        <body>
+                <h1>Skapa dina SRU filer</h1>
+                <p>För att testa de skapade filerna så gå in på följande sida <a href="https://www1.skatteverket.se/fv/fv_web/filval.do">https://www1.skatteverket.se/fv/fv_web/filval.do</a> hos skatteverket</p>
+
+                <form id='infoSruForm'>
+                        OrgNr: <input type='text' name='orgNr' /><br/>
+                        Namn: <input type='text' name='namn' /><br/>
+                        PostNr: <input type='text' name='postNr' /><br/>
+                        PostOrt: <input type='text' name='postOrt' /><br/>
+                        <input type='button' value='Generera SRU' onClick='javascript:skapaSruFiler(this.form)' />
+                </form>
+
+
+                <form id='nyBlankettForm'>
+                        Blankett: 
+                        <select name='blankettId'>
+                                <option value="INK2R-2013">Räkenskapsschema INK2R 2013</option>
+                                <option value="INK2S-2013">Skattemässiga justeringar INK2S 2013</option>
+                        </select><br/>
+                        IdOrgNr: <input type='text' name='idOrgNr' /><br/>
+                        <input type='button' value='Lägg till ny blankett' onClick='javascript:nyBlankett(this.form)' />
+                </form>
+
+
+                <form id='blankettDataForm'>
+                        <table id='tblUppgifter'></table>
+                        <input type='button' value='Lägg till uppgifter' onClick='javascript:fyllIBlankett(this.form)' />
+                </form>
+
+                <div id='resultat' style='display: none'>
+                        <h2>Genererade filer</h2>
+                        <h3>INFO.SRU</h3>
+                        <div id='infoSru'></div>
+                        <h3>BLANKETTER.SRU</h3>
+                        <div id='blanketterSru'></div>
+                </div>
+                <script>
+                        var fil = new Fil();
+                        var nuvrandeBlankett = null;
+
+                        function skapaSruFiler(form) {
+
+                                var infoSru = genereraInfoSru(form[0].value,
+                                                              form[1].value,
+                                                              form[2].value,
+                                                              form[3].value);
+                                document.getElementById('resultat').style.display = 'block';
+                                document.getElementById('infoSru').innerHTML = infoSru;
+                        }
+
+                        function nyBlankett(form) {
+
+                                var blankettId = form[0].value;
+
+                                nuvrandeBlankett = new Blankett(blankettId, form[1].value);
+                                fil.infogaBlankett(nuvrandeBlankett);
+
+                                uppdateraMöjligaUppgifter(blankettId);
+
+                                uppdateraBlanketterSru();
+                        }
+
+                        function fyllIBlankett(form) {
+                                for (var i = 0; i < (form.length - 1); i++) {
+                                        if (form[i].value != "") {
+                                                nuvrandeBlankett.nyUppgift(form[i].name, form[i].value);
+                                        }
+                                }
+                                uppdateraBlanketterSru();
+                        }
+
+                        function uppdateraBlanketterSru() {
+                                var blanketterSru = genereraBlanketterSru(fil);
+                                document.getElementById('blanketterSru').innerHTML = blanketterSru;
+                        }
+
+                        function uppdateraMöjligaUppgifter(blankettId) {
+                                var tillgängligaUppgifter = uppifter[blankettId] || [];
+                                var tblBody = document.createElement("tbody");
+                                var tr;
+
+                                for (var i = 0; i < tillgängligaUppgifter.length; ++i) {
+                                        if (i % 4 == 0) {
+                                                tr = document.createElement('tr');
+                                                tblBody.appendChild(tr);
+                                        }
+
+                                        var uppgift = tillgängligaUppgifter[i];
+
+                                        var td = document.createElement('td');
+                                        var label = document.createElement('label');
+                                        label.for = uppgift['id'];
+                                        label.innerText = uppgift['namn'];
+                                        var input = document.createElement('input');
+                                        input.name = uppgift['id'];
+                                        input.id = uppgift['id'];
+                                        td.appendChild(label);
+                                        td.appendChild(input);
+                                        tr.appendChild(td);
+                                }
+
+                                var tabell = document.getElementById('tblUppgifter');
+                                if (tabell.lastChild != null) {
+                                        tabell.removeChild(tabell.lastChild);
+                                }
+                                tabell.appendChild(tblBody);
+
+                        }
+
+                        var uppifter = { "INK2R-2013": [
+                                {"id": "PersOrgnr", "namn": "*Organisationsnummer"}, 
+                                {"id": "DatFramst", "namn": "*Ifyllnadsdatum"}, 
+                                {"id": "TidFramst", "namn": "*Ifyllnadstid"}, 
+
+                                {"id": 7001, "namn": "Första räkenskapsåret"}, 
+                                {"id": 7002, "namn": "Andra räkenskapsåret"}, 
+
+                                {"id": 7201, "namn": "2.1"}, 
+                                {"id": 7202, "namn": "2.2"}, 
+                                
+                                {"id": 7214, "namn": "2.3"}, 
+                                {"id": 7215, "namn": "2.4"}, 
+                                {"id": 7216, "namn": "2.5"}, 
+                                {"id": 7217, "namn": "2.6"},
+
+                                {"id": 7230, "namn": "2.7"},
+                                {"id": 7231, "namn": "2.8"},
+                                {"id": 7232, "namn": "2.9"},
+                                {"id": 7233, "namn": "2.10"},
+                                {"id": 7234, "namn": "2.11"},
+                                {"id": 7235, "namn": "2.12"},
+                                
+                                {"id": 7241, "namn": "2.13"},
+                                {"id": 7242, "namn": "2.14"},
+                                {"id": 7243, "namn": "2.15"},
+                                {"id": 7244, "namn": "2.16"},
+                                {"id": 7245, "namn": "2.17"},
+                                {"id": 7246, "namn": "2.18"},
+                                
+                                {"id": 7251, "namn": "2.19"},
+                                {"id": 7252, "namn": "2.20"},
+                                
+                                {"id": 7261, "namn": "2.21"},
+                                {"id": 7262, "namn": "2.22"},
+                                {"id": 7263, "namn": "2.23"},
+                                
+                                {"id": 7270, "namn": "2.24"},
+                                {"id": 7271, "namn": "2.25"},
+                                
+                                {"id": 7281, "namn": "2.26"},
+
+                                {"id": 7301, "namn": "2.27"},
+                                {"id": 7302, "namn": "2.28"},
+                                
+                                {"id": 7321, "namn": "2.29"},
+                                {"id": 7322, "namn": "2.30"},
+                                {"id": 7323, "namn": "2.31"},
+                                
+                                {"id": 7331, "namn": "2.32"},
+                                {"id": 7332, "namn": "2.33"},
+                                {"id": 7333, "namn": "2.34"},
+                                
+                                {"id": 7350, "namn": "2.35"},
+                                {"id": 7351, "namn": "2.36"},
+                                {"id": 7352, "namn": "2.37"},
+                                {"id": 7353, "namn": "2.38"},
+                                {"id": 7354, "namn": "2.39"},
+                                
+                                {"id": 7360, "namn": "2.40"},
+                                {"id": 7361, "namn": "2.41"},
+                                {"id": 7362, "namn": "2.42"},
+                                {"id": 7363, "namn": "2.43"},
+                                {"id": 7364, "namn": "2.44"},
+                                {"id": 7365, "namn": "2.45"},
+                                {"id": 7366, "namn": "2.46"},
+                                {"id": 7367, "namn": "2.47"},
+                                {"id": 7368, "namn": "2.48"},
+                                {"id": 7369, "namn": "2.49"},
+                                {"id": 7370, "namn": "2.50"},
+                                
+                                {"id": 7410, "namn": "3.1"},
+                                
+                                {"id": 7411, "namn": "3.2+"},
+                                {"id": 7510, "namn": "3.2-"},
+                                
+                                {"id": 7412, "namn": "3.3"},
+                                {"id": 7413, "namn": "3.4"},
+                                {"id": 7511, "namn": "3.5"},
+                                {"id": 7512, "namn": "3.6"},
+                                {"id": 7513, "namn": "3.7"},
+                                {"id": 7514, "namn": "3.8"},
+                                {"id": 7515, "namn": "3.9"},
+                                {"id": 7516, "namn": "3.10"},
+                                {"id": 7517, "namn": "3.11"},
+                                
+                                {"id": 7414, "namn": "3.12+"},
+                                {"id": 7518, "namn": "3.12-"},
+                                
+                                {"id": 7415, "namn": "3.13+"},
+                                {"id": 7519, "namn": "3.13-"},
+                                
+                                {"id": 7416, "namn": "3.14+"},
+                                {"id": 7520, "namn": "3.14-"},
+
+                                {"id": 7417, "namn": "3.15"},
+                                {"id": 7521, "namn": "3.16"},
+                                {"id": 7522, "namn": "3.17"},
+                                {"id": 7418, "namn": "3.18"},
+                                {"id": 7523, "namn": "3.19"},
+                                {"id": 7524, "namn": "3.20"},
+                                {"id": 7419, "namn": "3.21"},
+                                {"id": 7420, "namn": "3.22"},
+                                {"id": 7525, "namn": "3.23"},
+                                
+                                {"id": 7421, "namn": "3.24+"},
+                                {"id": 7526, "namn": "3.24-"},
+
+                                {"id": 7422, "namn": "3.25+"},
+                                {"id": 7527, "namn": "3.25-"},
+                                
+                                {"id": 7528, "namn": "3.26"},
+                                {"id": 7450, "namn": "3.28=+"},
+                                {"id": 7550, "namn": "3.29=-"}],
+                                
+                                "INK2S-2013": [
+                                {"id": "PersOrgnr", "namn": "*Organisationsnummer"}, 
+                                {"id": "Datframst", "namn": "*Ifyllnadsdatum"}, 
+                                {"id": "TidFramst", "namn": "*Ifyllnadstid"}, 
+
+                                {"id": 7001, "namn": "Första räkenskapsåret"}, 
+                                {"id": 7002, "namn": "Andra räkenskapsåret"}, 
+
+                                {"id": 7650, "namn": "4.1"},
+                                {"id": 7750, "namn": "4.2"},
+                                
+                                {"id": 7651, "namn": "4.3a"},
+                                {"id": 7652, "namn": "4.3b"},
+                                {"id": 7653, "namn": "4.3c"},
+                                
+                                {"id": 7751, "namn": "4.4a"},
+                                {"id": 7764, "namn": "4.4b"},
+                                
+                                {"id": 7752, "namn": "4.5a"},
+                                {"id": 7753, "namn": "4.5b"},
+                                {"id": 7754, "namn": "4.5c"},
+                                
+                                {"id": 7654, "namn": "4.6a"},
+                                {"id": 7668, "namn": "4.6b"},
+                                {"id": 7655, "namn": "4.6c"},
+                                {"id": 7667, "namn": "4.6d"},
+                                {"id": 7665, "namn": "4.6e"},
+                                
+                                {"id": 7755, "namn": "4.7a"},
+                                {"id": 7656, "namn": "4.7b"},
+                                {"id": 7756, "namn": "4.7c"},
+                                {"id": 7657, "namn": "4.7d"},
+                                {"id": 7658, "namn": "4.7e"},
+                                {"id": 7757, "namn": "4.7f"},
+                                
+                                {"id": 7758, "namn": "4.8a"},
+                                {"id": 7659, "namn": "4.8b"},
+                                {"id": 7660, "namn": "4.8c"},
+                                {"id": 7759, "namn": "4.8d"},
+
+                                {"id": 7666, "namn": "4.9+"},
+                                {"id": 7765, "namn": "4.9-"},
+
+                                {"id": 7661, "namn": "4.10+"},
+                                {"id": 7760, "namn": "4.10-"},
+                                
+                                {"id": 7761, "namn": "4.11"},
+                                {"id": 7662, "namn": "4.12"},
+                                
+                                {"id": 7663, "namn": "4.13+"},
+                                {"id": 7762, "namn": "4.13-"},
+                                
+                                {"id": 7763, "namn": "4.14a"},
+                                {"id": 7664, "namn": "4.14b"},
+                                
+                                {"id": 7670, "namn": "4.15=+"},
+                                {"id": 7770, "namn": "4.16=-"},
+                                
+                                {"id": 8020, "namn": "4.17"},
+                                {"id": 8021, "namn": "4.18"},
+                                {"id": 8023, "namn": "4.19"},
+                                {"id": 8026, "namn": "4.20"},
+                                
+                                {"id": 8040, "namn": "Redovisningskonsult JA"},
+                                {"id": 8041, "namn": "Redovisningskonsult NEJ"},
+
+                                {"id": 8044, "namn": "Revision JA"},
+                                {"id": 8045, "namn": "Revision NEJ"}]
+                        };
+
+                </script>
+        </body>
+</html>
