@@ -8,42 +8,47 @@
                 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
 
                 <!-- Latest compiled and minified JavaScript -->
-                <script type="text/javascript" src="jquery-2.0.3.min.js"></script>
+                <script type="text/javascript" src="lib/jquery-2.0.3.min.js"></script>
                 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
                 
-                <script type="text/javascript" src="SRUMaker.js"></script>
+                <script type="text/javascript" src="src/SRUMaker.js"></script>
         </head>
         <body>
                 <h1>Skapa dina SRU filer</h1>
                 <p>För att testa de skapade filerna så gå in på följande sida <a href='https://www1.skatteverket.se/fv/fv_web/login.do' target='_blank'>https://www1.skatteverket.se/fv/fv_web/login.do</a> hos skatteverket</p>
+                <p>För att kontrollera testerna gå till <a href='SpecRunner.html'>SpecRunner</a></p>
 
-                <form id='infoSruForm'>
-                        Inlämnarens OrgNr: <input type='text' name='orgNr' /><br/>
-                        Inlämnarens Namn: <input type='text' name='namn' /><br/>
-                        Inlämnarens PostNr: <input type='text' name='postNr' /><br/>
-                        Inlämnarens PostOrt: <input type='text' name='postOrt' /><br/>
-                        <input type='button' value='Generera INFO SRU' onClick='javascript:skapaInfoSruFil(this.form)' />
-                </form>
+                <div>
+                    <form id='infoSruForm' onSubmit='return skapaInfoSruFil(this)'>
+                        Inlämnarens OrgNr: <input type='text' name='orgNr' pattern='[1-2][0-9]{11}' title='Org eller personnummer utan - eller +. Juridiska personer inleds med 16' size='12' maxlength='12' required /><br/>
+                        Inlämnarens Namn: <input type='text' name='namn' required /><br/>
+                        Inlämnarens PostNr: <input type='text' name='postNr' pattern='[1-9][0-9]{4}' size='5' maxlength='5' required /><br/>
+                        Inlämnarens PostOrt: <input type='text' name='postOrt' required /><br/>
+                        <input type='submit' value='Generera INFO SRU' />
+                    </form>
+                </div>
 
-
-                <form id='nyBlankettForm'>
+                <div id='divBlankett' style='display: none'>
+                    <form id='nyBlankettForm' onSubmit='return nyBlankett(this)'>
                         Blankett: 
                         <select name='blankettId'>
                                 <option value="INK2R-2013P1">Räkenskapsschema INK2R 2013P1</option>
                                 <option value="INK2S-2013P1">Skattemässiga justeringar INK2S 2013P1</option>
                         </select><br/>
-                        OrgNr: <input type='text' name='orgNr' /><br/>
+                        OrgNr: <input type='text' name='orgNr' pattern='[1-2][0-9]{11}' title='Org eller personnummer utan - eller +. Juridiska personer inleds med 16' size='12' maxlength='12' required /><br/>
                         Namn: <input type='text' name='namn' /><br/>
-                        <input type='button' value='Lägg till ny blankett' onClick='javascript:nyBlankett(this.form)' />
-                </form>
+                        <input type='submit' value='Lägg till ny blankett' />
+                    </form>
+                </div>
 
-
-                <form id='blankettDataForm' onSubmit='return fyllIBlankett(this)'>
+                <div id='divBlankettData' style='display: none'>
+                    <form id='blankettDataForm' onSubmit='return fyllIBlankett(this)'>
                         <table id='tblUppgifter'></table>
                         <input type='submit' value='Lägg till uppgifter' />
-                </form>
+                    </form>
+                </div>
 
-                <div id='resultat' style='display: none'>
+                <div id='divResultat' style='display: none'>
                         <h2>Genererade filer</h2>
                         <div>
                                 <h3>INFO.SRU</h3>
@@ -66,11 +71,13 @@
                                                               form[1].value,
                                                               form[2].value,
                                                               form[3].value);
-                                document.getElementById('resultat').style.display = 'block';
+                                document.getElementById('divResultat').style.display = 'block';
+                                document.getElementById('divBlankett').style.display = 'block';
                                 document.getElementById('infoSru').innerHTML = infoSru;
                                 
                                 var formBlob = new Blob([infoSru.replace(/<br\/>/g,'\n')], { type: 'text/plain' });
                                 document.getElementById('lnkInfoSru').href = window.URL.createObjectURL(formBlob);
+                                return false;
                         }
 
                         function nyBlankett(form) {
@@ -86,6 +93,10 @@
                                 uppdateraMöjligaUppgifter(blankettId);
 
                                 uppdateraBlanketterSru();
+
+                                document.getElementById('divBlankettData').style.display = 'block';
+
+                                return false;
                         }
 
                         function fyllIBlankett(form) {
@@ -150,6 +161,8 @@
                                         } else if (uppgift.typ == "Datum_A") {
                                                 input.type = 'text';
                                                 input.pattern = "[0-9]{8}";
+                                                input.maxlength = 8;
+                                                input.size = 8;
                                                 input.title += "Datum YYYYMMDD";
                                         }
                                         
