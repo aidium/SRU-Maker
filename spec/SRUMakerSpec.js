@@ -26,7 +26,7 @@ describe("Databeskrivning", function() {
                         expect(databeskrivning.skapad()).toMatch(/#SKAPAD \d\d\d\d\d\d\d\d \d\d\d\d\d\d/);
                 });
 
-                it("Ska ha produkt som SRU2013", function() {
+                it("Ska ha produkt som SRU", function() {
                         expect(databeskrivning.produkt()).toEqual("#PRODUKT SRU");
                 });
 
