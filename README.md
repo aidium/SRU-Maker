@@ -1,7 +1,7 @@
 SRU-Maker
 ==========
 
-A simple javascript based generator of SKU file format. Use to make tranferfiles to the swedish tax agency.
+A simple javascript based generator of SRU file format. Use to make tranferfiles to the swedish tax agency.
 
 For more infomation see doc folder (only in swedish)
 
