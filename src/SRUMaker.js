@@ -6,14 +6,14 @@ function helloTest() {
 function Databeskrivning() {
 
     this.generera = function() {
-        var innehåll = [];
-        innehåll.push(this.databeskrivningStart());
-        innehåll.push(this.produkt());
-        innehåll.push(this.skapad());
-        innehåll.push(this.program());
-        innehåll.push(this.filnamn());
-        innehåll.push(this.databeskrivningSlut());
-        return innehåll;
+        var innehï¿½ll = [];
+        innehï¿½ll.push(this.databeskrivningStart());
+        innehï¿½ll.push(this.produkt());
+        innehï¿½ll.push(this.skapad());
+        innehï¿½ll.push(this.program());
+        innehï¿½ll.push(this.filnamn());
+        innehï¿½ll.push(this.databeskrivningSlut());
+        return innehï¿½ll;
     }
 
     this.databeskrivningStart = function() {
@@ -44,7 +44,7 @@ function Databeskrivning() {
 }
 
 function formatDatum(datum) {
-        return "" + datum.getFullYear() + (datum.getMonth() + 1) + datum.getDate();
+        return "" + datum.getFullYear() + inledMedNoll(datum.getMonth() + 1) + inledMedNoll(datum.getDate());
 }
 
 function formatTid(datum) {
@@ -65,14 +65,14 @@ function Medielev(aOrgNr, aNamn, aPostNr, aPostOrt) {
     this.varPostOrt = aPostOrt;
 
     this.generera = function() {
-        var innehåll = [];
-        innehåll.push(this.medielevStart());
-        innehåll.push(this.orgNr());
-        innehåll.push(this.namn());
-        innehåll.push(this.postNr());
-        innehåll.push(this.postOrt());
-        innehåll.push(this.medielevSlut());
-        return innehåll;
+        var innehï¿½ll = [];
+        innehï¿½ll.push(this.medielevStart());
+        innehï¿½ll.push(this.orgNr());
+        innehï¿½ll.push(this.namn());
+        innehï¿½ll.push(this.postNr());
+        innehï¿½ll.push(this.postOrt());
+        innehï¿½ll.push(this.medielevSlut());
+        return innehï¿½ll;
     }
 
     this.medielevStart = function() {
@@ -120,37 +120,37 @@ function Blankett(aBlankettId, aIdOrgNr) {
         }
 
         this.generera = function() {
-                var innehåll = [];
-                innehåll.push(this.start());
-                innehåll.push(this.identitet());
+                var innehï¿½ll = [];
+                innehï¿½ll.push(this.start());
+                innehï¿½ll.push(this.identitet());
                 if (this.namn !== null) {
-                        innehåll.push(this.namn);
+                        innehï¿½ll.push(this.namn);
                 }
                 this.uppgifter.forEach(function(post) {
-                        innehåll.push(post);
+                        innehï¿½ll.push(post);
                 });
-                innehåll.push(this.slut());
-                return innehåll;
+                innehï¿½ll.push(this.slut());
+                return innehï¿½ll;
         }
 
         this.infogaNamn = function(aNamn) {
                 this.namn = "#NAMN " + aNamn;
         }
 
-        this.uppgift = function(id, värde) {
-                return "#UPPGIFT " + id + " " + värde;
+        this.uppgift = function(id, vï¿½rde) {
+                return "#UPPGIFT " + id + " " + vï¿½rde;
         }
 
-        this.nyUppgift = function(id, värde) {
-                this.uppgifter.push(this.uppgift(id, värde));
+        this.nyUppgift = function(id, vï¿½rde) {
+                this.uppgifter.push(this.uppgift(id, vï¿½rde));
         }
 
-        this.systemInfo = function(värde) {
-                return "#SYSTEMINFO " + värde;
+        this.systemInfo = function(vï¿½rde) {
+                return "#SYSTEMINFO " + vï¿½rde;
         }
 
-        this.läggtillSystemInfo = function(värde) {
-                this.uppgifter.push(this.systemInfo(värde));
+        this.lï¿½ggtillSystemInfo = function(vï¿½rde) {
+                this.uppgifter.push(this.systemInfo(vï¿½rde));
         }
 }
 
@@ -162,12 +162,12 @@ function Fil() {
 
 
         this.generera = function() {
-                var innehåll = [];
+                var innehï¿½ll = [];
                 this.blanketter.forEach(function(blankett) {
-                        innehåll = innehåll.concat(blankett.generera());
+                        innehï¿½ll = innehï¿½ll.concat(blankett.generera());
                 });
-                innehåll.push("#FIL_SLUT");
-                return innehåll;
+                innehï¿½ll.push("#FIL_SLUT");
+                return innehï¿½ll;
         }
 }
 
@@ -175,15 +175,15 @@ function genereraInfoSru(aOrgNr, aNamn, aPostNr, aPostOrt) {
         var databeskrivning = new Databeskrivning();
         var medialev = new Medielev(aOrgNr, aNamn, aPostNr, aPostOrt);
 
-        var innehåll = databeskrivning.generera();
-        innehåll = innehåll.concat(medialev.generera());
+        var innehï¿½ll = databeskrivning.generera();
+        innehï¿½ll = innehï¿½ll.concat(medialev.generera());
 
-        var infoSru = innehåll.join("<br/>");
+        var infoSru = innehï¿½ll.join("<br/>");
         return infoSru;
 }
 
 function genereraBlanketterSru(fil) {
-       var innehåll = fil.generera();
-       blanketterSru = innehåll.join("<br/>");
+       var innehï¿½ll = fil.generera();
+       blanketterSru = innehï¿½ll.join("<br/>");
        return blanketterSru;
 }
