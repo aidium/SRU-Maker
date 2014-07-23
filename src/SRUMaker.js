@@ -6,14 +6,14 @@ function helloTest() {
 function Databeskrivning() {
 
     this.generera = function() {
-        var innehï¿½ll = [];
-        innehï¿½ll.push(this.databeskrivningStart());
-        innehï¿½ll.push(this.produkt());
-        innehï¿½ll.push(this.skapad());
-        innehï¿½ll.push(this.program());
-        innehï¿½ll.push(this.filnamn());
-        innehï¿½ll.push(this.databeskrivningSlut());
-        return innehï¿½ll;
+        var innehåll = [];
+        innehåll.push(this.databeskrivningStart());
+        innehåll.push(this.produkt());
+        innehåll.push(this.skapad());
+        innehåll.push(this.program());
+        innehåll.push(this.filnamn());
+        innehåll.push(this.databeskrivningSlut());
+        return innehåll;
     }
 
     this.databeskrivningStart = function() {
@@ -65,14 +65,14 @@ function Medielev(aOrgNr, aNamn, aPostNr, aPostOrt) {
     this.varPostOrt = aPostOrt;
 
     this.generera = function() {
-        var innehï¿½ll = [];
-        innehï¿½ll.push(this.medielevStart());
-        innehï¿½ll.push(this.orgNr());
-        innehï¿½ll.push(this.namn());
-        innehï¿½ll.push(this.postNr());
-        innehï¿½ll.push(this.postOrt());
-        innehï¿½ll.push(this.medielevSlut());
-        return innehï¿½ll;
+        var innehåll = [];
+        innehåll.push(this.medielevStart());
+        innehåll.push(this.orgNr());
+        innehåll.push(this.namn());
+        innehåll.push(this.postNr());
+        innehåll.push(this.postOrt());
+        innehåll.push(this.medielevSlut());
+        return innehåll;
     }
 
     this.medielevStart = function() {
@@ -120,37 +120,37 @@ function Blankett(aBlankettId, aIdOrgNr) {
         }
 
         this.generera = function() {
-                var innehï¿½ll = [];
-                innehï¿½ll.push(this.start());
-                innehï¿½ll.push(this.identitet());
+                var innehåll = [];
+                innehåll.push(this.start());
+                innehåll.push(this.identitet());
                 if (this.namn !== null) {
-                        innehï¿½ll.push(this.namn);
+                        innehåll.push(this.namn);
                 }
                 this.uppgifter.forEach(function(post) {
-                        innehï¿½ll.push(post);
+                        innehåll.push(post);
                 });
-                innehï¿½ll.push(this.slut());
-                return innehï¿½ll;
+                innehåll.push(this.slut());
+                return innehåll;
         }
 
         this.infogaNamn = function(aNamn) {
                 this.namn = "#NAMN " + aNamn;
         }
 
-        this.uppgift = function(id, vï¿½rde) {
-                return "#UPPGIFT " + id + " " + vï¿½rde;
+        this.uppgift = function(id, värde) {
+                return "#UPPGIFT " + id + " " + värde;
         }
 
-        this.nyUppgift = function(id, vï¿½rde) {
-                this.uppgifter.push(this.uppgift(id, vï¿½rde));
+        this.nyUppgift = function(id, värde) {
+                this.uppgifter.push(this.uppgift(id, värde));
         }
 
-        this.systemInfo = function(vï¿½rde) {
-                return "#SYSTEMINFO " + vï¿½rde;
+        this.systemInfo = function(värde) {
+                return "#SYSTEMINFO " + värde;
         }
 
-        this.lï¿½ggtillSystemInfo = function(vï¿½rde) {
-                this.uppgifter.push(this.systemInfo(vï¿½rde));
+        this.läggtillSystemInfo = function(värde) {
+                this.uppgifter.push(this.systemInfo(värde));
         }
 }
 
@@ -162,12 +162,12 @@ function Fil() {
 
 
         this.generera = function() {
-                var innehï¿½ll = [];
+                var innehåll = [];
                 this.blanketter.forEach(function(blankett) {
-                        innehï¿½ll = innehï¿½ll.concat(blankett.generera());
+                        innehåll = innehåll.concat(blankett.generera());
                 });
-                innehï¿½ll.push("#FIL_SLUT");
-                return innehï¿½ll;
+                innehåll.push("#FIL_SLUT");
+                return innehåll;
         }
 }
 
@@ -175,15 +175,15 @@ function genereraInfoSru(aOrgNr, aNamn, aPostNr, aPostOrt) {
         var databeskrivning = new Databeskrivning();
         var medialev = new Medielev(aOrgNr, aNamn, aPostNr, aPostOrt);
 
-        var innehï¿½ll = databeskrivning.generera();
-        innehï¿½ll = innehï¿½ll.concat(medialev.generera());
+        var innehåll = databeskrivning.generera();
+        innehåll = innehåll.concat(medialev.generera());
 
-        var infoSru = innehï¿½ll.join("<br/>");
+        var infoSru = innehåll.join("<br/>");
         return infoSru;
 }
 
 function genereraBlanketterSru(fil) {
-       var innehï¿½ll = fil.generera();
-       blanketterSru = innehï¿½ll.join("<br/>");
+       var innehåll = fil.generera();
+       blanketterSru = innehåll.join("<br/>");
        return blanketterSru;
 }
