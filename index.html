@@ -12,6 +12,7 @@
                 <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
                 
                 <script type="text/javascript" src="src/SRUMaker.js"></script>
+                <script type="text/javascript" src="uppgifter_2014.js"></script>
                 <style type="text/css">
 
                     input:invalid, input:focus:invalid {
@@ -57,18 +58,23 @@
                     <form id='nyBlankettForm' onSubmit='return nyBlankett(this)'>
                         Blankett: 
                         <select name='blankettId'>
-                                <option value="INK2R-2013">Räkenskapsschema INK2R 2013</option>
-                                <option value="INK4R-2013">Räkenskapsschema INK4R 2013</option>
-                                <option value="INK2S-2013">Skattemässiga justeringar INK2S 2013</option>
-                                <option value="INK4S-2013">Skattemässiga justeringar INK4S 2013</option>
-                                <option value="INK4DU-2013">Delägaruppgifter Handelsbolag INK4DU 2013</option>
+                                <option value="INK2R-2014">Räkenskapsschema INK2R 2014</option>
+                                <option value="INK2S-2014">Skattemässiga justeringar INK2S 2014</option>
+                                <option value="INK3-2014">Ideella föreningar, stiftelser m.fl. INK3 2014</option>
+                                <option value="INK3K-2014">Kapitalinkomster m.m. INK3K 2014</option>
+                                <option value="INK3R-2014">Räkenskapsschema INK3R 2014</option>
+                                <option value="INK3S-2014">Skattemässiga justeringar INK3S 2014</option>
+                                <option value="INK3SU-2014">Särskild uppgift - Stiftelse INK3SU 2014</option>
+                                <option value="INK4DU-2014">Delägaruppgifter Handelsbolag INK4DU 2014</option>
+                                <option value="INK4R-2014">Räkenskapsschema INK4R 2014</option>
+                                <option value="INK4S-2014">Skattemässiga justeringar INK4S 2014</option>
                         </select><br/>
                         Sista dagen på räkenskapsåret mellan<select name='periodId'>
-                                <option value="P1">P1: 20130101-20130430</option>
-                                <option value="P2">P2: 20130501-20130630</option>
-                                <option value="P3">P3: 20130701-20130831</option>
-                                <option value="P4">P4: 20130901-20131231</option>
-                                <option value="P4INK1">P4INK1: 20131231-20131231</option>
+                                <option value="P1">P1: 20140101-20140430</option>
+                                <option value="P2">P2: 20140501-20140630</option>
+                                <option value="P3">P3: 20140701-20140831</option>
+                                <option value="P4">P4: 20140901-20141231</option>
+                                <option value="P4INK1">P4INK1: 20141231-20141231</option>
                         </select><br/>
                         OrgNr: <input type='text' name='orgNr' pattern='[1-2][0-9]{11}' title='Org eller personnummer utan - eller +. Juridiska personer inleds med 16' size='14' maxlength='12' required /><br/>
                         Namn: <input type='text' name='namn' /><br/>
@@ -181,10 +187,8 @@
                                 var tr;
 
                                 for (var i = 0; i < tillgängligaUppgifter.length; ++i) {
-                                        if (i % 4 == 0) {
-                                                tr = document.createElement('tr');
-                                                tblBody.appendChild(tr);
-                                        }
+                                        tr = document.createElement('tr');
+                                        tblBody.appendChild(tr);
 
                                         var uppgift = tillgängligaUppgifter[i];
 
@@ -218,17 +222,34 @@
                                                 input.size = '15';
                                                 input.maxlength = '12';
                                                 input.title += "Numeriskt mellan 0 och 999999999999";
-                                        } else if (uppgift.typ == "Datum_A") {
+                                        } else if (uppgift.typ == "Datum_A" || uppgift.typ == "Datum_D") {
                                                 input.type = 'text';
                                                 input.pattern = "[1-2][0-9]{3}[0-1][0-9][0-3][0-9]";
                                                 input.size = '10';
                                                 input.maxlength = '8';
                                                 input.required = 'required';
-                                                input.title += "Datum YYYYMMDD";
+                                                input.title += "Datum ÅÅÅÅMMDD";
+                                        } else if (uppgift.typ == "Numeriskt_G") {
+                                                input.type = 'text';
+                                                input.pattern = '[1-9]\\d{0,1}|100';
+                                                input.size = '6';
+                                                input.maxlength = '3';
+                                                input.title += "Numeriskt mellan 1 och 100";
+                                        } else if (uppgift.typ == "Str_36") {
+                                                input.type = 'text';
+                                                input.size = '39';
+                                                input.maxlength = '36';
+                                                input.title += "Text";
+                                        } else if (uppgift.typ == "Orgnr_Id") {
+                                                input.typ = 'text';
+                                                input.pattern = "[1-2][0-9]{11}";
+                                                input.title = 'Org eller personnummer utan - eller +. Juridiska personer inleds med 16';
+                                                input.size = '14';
+                                                input.maxlength = '12';
                                         }
                                         
-                                        td.appendChild(label);
                                         td.appendChild(input);
+                                        td.appendChild(label);
                                         tr.appendChild(td);
                                 }
 
@@ -237,438 +258,7 @@
                                         tabell.removeChild(tabell.lastChild);
                                 }
                                 tabell.appendChild(tblBody);
-
                         }
-
-                        var uppifter = { "INK2R-2013": [
-                                {"id": 7011, "namn": "Räkenskapsår Fr.o.m",  "typ": "Datum_A"}, 
-                                {"id": 7012, "namn": "Räkenskapsår T.o.m",  "typ": "Datum_A"}, 
-
-                                {"id": 7201, "namn": "2.1", "typ": "Numeriskt_A"}, 
-                                {"id": 7202, "namn": "2.2", "typ": "Numeriskt_A"}, 
-                                
-                                {"id": 7214, "namn": "2.3", "typ": "Numeriskt_A"}, 
-                                {"id": 7215, "namn": "2.4", "typ": "Numeriskt_A"}, 
-                                {"id": 7216, "namn": "2.5", "typ": "Numeriskt_A"}, 
-                                {"id": 7217, "namn": "2.6", "typ": "Numeriskt_A"},
-
-                                {"id": 7230, "namn": "2.7", "typ": "Numeriskt_A"},
-                                {"id": 7231, "namn": "2.8", "typ": "Numeriskt_A"},
-                                {"id": 7232, "namn": "2.9", "typ": "Numeriskt_A"},
-                                {"id": 7233, "namn": "2.10", "typ": "Numeriskt_A"},
-                                {"id": 7234, "namn": "2.11", "typ": "Numeriskt_A"},
-                                {"id": 7235, "namn": "2.12", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7241, "namn": "2.13", "typ": "Numeriskt_A"},
-                                {"id": 7242, "namn": "2.14", "typ": "Numeriskt_A"},
-                                {"id": 7243, "namn": "2.15", "typ": "Numeriskt_A"},
-                                {"id": 7244, "namn": "2.16", "typ": "Numeriskt_A"},
-                                {"id": 7245, "namn": "2.17", "typ": "Numeriskt_A"},
-                                {"id": 7246, "namn": "2.18", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7251, "namn": "2.19", "typ": "Numeriskt_A"},
-                                {"id": 7252, "namn": "2.20", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7261, "namn": "2.21", "typ": "Numeriskt_A"},
-                                {"id": 7262, "namn": "2.22", "typ": "Numeriskt_A"},
-                                {"id": 7263, "namn": "2.23", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7270, "namn": "2.24", "typ": "Numeriskt_A"},
-                                {"id": 7271, "namn": "2.25", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7281, "namn": "2.26", "typ": "Numeriskt_A"},
-
-                                {"id": 7301, "namn": "2.27", "typ": "Numeriskt_A"},
-                                {"id": 7302, "namn": "2.28", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7321, "namn": "2.29", "typ": "Numeriskt_A"},
-                                {"id": 7322, "namn": "2.30", "typ": "Numeriskt_A"},
-                                {"id": 7323, "namn": "2.31", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7331, "namn": "2.32", "typ": "Numeriskt_A"},
-                                {"id": 7332, "namn": "2.33", "typ": "Numeriskt_A"},
-                                {"id": 7333, "namn": "2.34", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7350, "namn": "2.35", "typ": "Numeriskt_A"},
-                                {"id": 7351, "namn": "2.36", "typ": "Numeriskt_A"},
-                                {"id": 7352, "namn": "2.37", "typ": "Numeriskt_A"},
-                                {"id": 7353, "namn": "2.38", "typ": "Numeriskt_A"},
-                                {"id": 7354, "namn": "2.39", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7360, "namn": "2.40", "typ": "Numeriskt_A"},
-                                {"id": 7361, "namn": "2.41", "typ": "Numeriskt_A"},
-                                {"id": 7362, "namn": "2.42", "typ": "Numeriskt_A"},
-                                {"id": 7363, "namn": "2.43", "typ": "Numeriskt_A"},
-                                {"id": 7364, "namn": "2.44", "typ": "Numeriskt_A"},
-                                {"id": 7365, "namn": "2.45", "typ": "Numeriskt_A"},
-                                {"id": 7366, "namn": "2.46", "typ": "Numeriskt_A"},
-                                {"id": 7367, "namn": "2.47", "typ": "Numeriskt_A"},
-                                {"id": 7368, "namn": "2.48", "typ": "Numeriskt_A"},
-                                {"id": 7369, "namn": "2.49", "typ": "Numeriskt_A"},
-                                {"id": 7370, "namn": "2.50", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7410, "namn": "3.1", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7411, "namn": "3.2+", "typ": "Numeriskt_A"},
-                                {"id": 7510, "namn": "3.2-", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7412, "namn": "3.3", "typ": "Numeriskt_A"},
-                                {"id": 7413, "namn": "3.4", "typ": "Numeriskt_A"},
-                                {"id": 7511, "namn": "3.5", "typ": "Numeriskt_A"},
-                                {"id": 7512, "namn": "3.6", "typ": "Numeriskt_A"},
-                                {"id": 7513, "namn": "3.7", "typ": "Numeriskt_A"},
-                                {"id": 7514, "namn": "3.8", "typ": "Numeriskt_A"},
-                                {"id": 7515, "namn": "3.9", "typ": "Numeriskt_A"},
-                                {"id": 7516, "namn": "3.10", "typ": "Numeriskt_A"},
-                                {"id": 7517, "namn": "3.11", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7414, "namn": "3.12+", "typ": "Numeriskt_A"},
-                                {"id": 7518, "namn": "3.12-", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7415, "namn": "3.13+", "typ": "Numeriskt_A"},
-                                {"id": 7519, "namn": "3.13-", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7416, "namn": "3.14+", "typ": "Numeriskt_A"},
-                                {"id": 7520, "namn": "3.14-", "typ": "Numeriskt_A"},
-
-                                {"id": 7417, "namn": "3.15", "typ": "Numeriskt_A"},
-                                {"id": 7521, "namn": "3.16", "typ": "Numeriskt_A"},
-                                {"id": 7522, "namn": "3.17", "typ": "Numeriskt_A"},
-                                {"id": 7418, "namn": "3.18", "typ": "Numeriskt_A"},
-                                {"id": 7523, "namn": "3.19", "typ": "Numeriskt_A"},
-                                {"id": 7524, "namn": "3.20", "typ": "Numeriskt_A"},
-                                {"id": 7419, "namn": "3.21", "typ": "Numeriskt_A"},
-                                {"id": 7420, "namn": "3.22", "typ": "Numeriskt_B"},
-                                {"id": 7525, "namn": "3.23", "typ": "Numeriskt_B"},
-                                
-                                {"id": 7421, "namn": "3.24+", "typ": "Numeriskt_A"},
-                                {"id": 7526, "namn": "3.24-", "typ": "Numeriskt_A"},
-
-                                {"id": 7422, "namn": "3.25+", "typ": "Numeriskt_A"},
-                                {"id": 7527, "namn": "3.25-", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7528, "namn": "3.26", "typ": "Numeriskt_A"},
-                                {"id": 7450, "namn": "3.27=+", "typ": "Numeriskt_B"},
-                                {"id": 7550, "namn": "3.28=-", "typ": "Numeriskt_B"}],
-                                
-                                "INK2S-2013": [
-                                {"id": 7011, "namn": "Räkenskapsår Fr.o.m",  "typ": "Datum_A"}, 
-                                {"id": 7012, "namn": "Räkenskapsår T.o.m",  "typ": "Datum_A"}, 
-
-                                {"id": 7650, "namn": "4.1", "typ": "Numeriskt_B"},
-                                {"id": 7750, "namn": "4.2", "typ": "Numeriskt_B"},
-                                
-                                {"id": 7651, "namn": "4.3a", "typ": "Numeriskt_A"},
-                                {"id": 7652, "namn": "4.3b", "typ": "Numeriskt_A"},
-                                {"id": 7653, "namn": "4.3c", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7751, "namn": "4.4a", "typ": "Numeriskt_A"},
-                                {"id": 7764, "namn": "4.4b", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7752, "namn": "4.5a", "typ": "Numeriskt_A"},
-                                {"id": 7753, "namn": "4.5b", "typ": "Numeriskt_A"},
-                                {"id": 7754, "namn": "4.5c", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7654, "namn": "4.6a", "typ": "Numeriskt_A"},
-                                {"id": 7668, "namn": "4.6b", "typ": "Numeriskt_A"},
-                                {"id": 7655, "namn": "4.6c", "typ": "Numeriskt_A"},
-                                {"id": 7667, "namn": "4.6d", "typ": "Numeriskt_A"},
-                                {"id": 7665, "namn": "4.6e", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7755, "namn": "4.7a", "typ": "Numeriskt_B"},
-                                {"id": 7656, "namn": "4.7b", "typ": "Numeriskt_B"},
-                                {"id": 7756, "namn": "4.7c", "typ": "Numeriskt_B"},
-                                {"id": 7657, "namn": "4.7d", "typ": "Numeriskt_B"},
-                                {"id": 7658, "namn": "4.7e", "typ": "Numeriskt_B"},
-                                {"id": 7757, "namn": "4.7f", "typ": "Numeriskt_B"},
-                                
-                                {"id": 7758, "namn": "4.8a", "typ": "Numeriskt_B"},
-                                {"id": 7659, "namn": "4.8b", "typ": "Numeriskt_B"},
-                                {"id": 7660, "namn": "4.8c", "typ": "Numeriskt_B"},
-                                {"id": 7759, "namn": "4.8d", "typ": "Numeriskt_B"},
-
-                                {"id": 7666, "namn": "4.9+", "typ": "Numeriskt_B"},
-                                {"id": 7765, "namn": "4.9-", "typ": "Numeriskt_B"},
-
-                                {"id": 7661, "namn": "4.10+", "typ": "Numeriskt_B"},
-                                {"id": 7760, "namn": "4.10-", "typ": "Numeriskt_B"},
-                                
-                                {"id": 7761, "namn": "4.11", "typ": "Numeriskt_A"},
-                                {"id": 7662, "namn": "4.12", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7663, "namn": "4.13+", "typ": "Numeriskt_B"},
-                                {"id": 7762, "namn": "4.13-", "typ": "Numeriskt_B"},
-                                
-                                {"id": 7763, "namn": "4.14a", "typ": "Numeriskt_A"},
-                                {"id": 7664, "namn": "4.14b", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7670, "namn": "4.15=+", "typ": "Numeriskt_B"},
-                                {"id": 7770, "namn": "4.16=-", "typ": "Numeriskt_B"},
-                                
-                                {"id": 8020, "namn": "4.17", "typ": "Numeriskt_A"},
-                                {"id": 8021, "namn": "4.18", "typ": "Numeriskt_A"},
-                                {"id": 8023, "namn": "4.19", "typ": "Numeriskt_B"},
-                                {"id": 8026, "namn": "4.20", "typ": "Numeriskt_B"},
-                                {"id": 8022, "namn": "4.21", "typ": "Numeriskt_A"},
-                                
-                                {"id": 8040, "namn": "Redovisningskonsult JA", "typ": "Str_X"},
-                                {"id": 8041, "namn": "Redovisningskonsult NEJ", "typ": "Str_X"},
-
-                                {"id": 8044, "namn": "Revision JA", "typ": "Str_X"},
-				{"id": 8045, "namn": "Revision NEJ", "typ": "Str_X"}],
-
-				"INK4R-2013": [
-                                {"id": 7011, "namn": "Räkenskapsår Fr.o.m",  "typ": "Datum_A"}, 
-                                {"id": 7012, "namn": "Räkenskapsår T.o.m",  "typ": "Datum_A"}, 
-
-                                {"id": 7201, "namn": "2.1", "typ": "Numeriskt_A"}, 
-                                {"id": 7202, "namn": "2.2", "typ": "Numeriskt_A"}, 
-                                
-                                {"id": 7214, "namn": "2.3", "typ": "Numeriskt_A"}, 
-                                {"id": 7215, "namn": "2.4", "typ": "Numeriskt_A"}, 
-                                {"id": 7216, "namn": "2.5", "typ": "Numeriskt_A"}, 
-                                {"id": 7217, "namn": "2.6", "typ": "Numeriskt_A"},
-
-                                {"id": 7236, "namn": "2.7", "typ": "Numeriskt_A"},
-                                {"id": 7232, "namn": "2.8", "typ": "Numeriskt_A"},
-                                {"id": 7237, "namn": "2.9", "typ": "Numeriskt_A"},
-				{
-				"id": 7247, "namn": "2.10", "typ": "Numeriskt_A"},
-                                {"id": 7245, "namn": "2.11", "typ": "Numeriskt_A"},
-                                {"id": 7246, "namn": "2.12", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7253, "namn": "2.13", "typ": "Numeriskt_A"},
-				
-				{"id": 7264, "namn": "2.14", "typ": "Numeriskt_A"},
-                                {"id": 7263, "namn": "2.15", "typ": "Numeriskt_A"},
-				
-				{"id": 7272, "namn": "2.16", "typ": "Numeriskt_A"},
-				
-				{"id": 7281, "namn": "2.17", "typ": "Numeriskt_A"},
-				
-				{"id": 7310, "namn": "2.18", "typ": "Numeriskt_A"},
-                                {"id": 7311, "namn": "2.19", "typ": "Numeriskt_A"},
-                                {"id": 7312, "namn": "2.20", "typ": "Numeriskt_A"},
-                                {"id": 7313, "namn": "2.21", "typ": "Numeriskt_A"},
-				{"id": 7314, "namn": "2.22", "typ": "Numeriskt_A"},
-
-                                {"id": 7322, "namn": "2.23", "typ": "Numeriskt_A"},
-                                {"id": 7323, "namn": "2.24", "typ": "Numeriskt_A"},
-				
-                                {"id": 7331, "namn": "2.25", "typ": "Numeriskt_A"},
-                                {"id": 7332, "namn": "2.26", "typ": "Numeriskt_A"},
-                                {"id": 7333, "namn": "2.27", "typ": "Numeriskt_A"},
-				
-                                {"id": 7353, "namn": "2.28", "typ": "Numeriskt_A"},
-                                {"id": 7355, "namn": "2.29", "typ": "Numeriskt_A"},
-
-                                {"id": 7362, "namn": "2.30", "typ": "Numeriskt_A"},
-                                {"id": 7363, "namn": "2.31", "typ": "Numeriskt_A"},
-                                {"id": 7365, "namn": "2.32", "typ": "Numeriskt_A"},
-                                {"id": 7368, "namn": "2.33", "typ": "Numeriskt_A"},
-
-                                {"id": 7371, "namn": "2.34", "typ": "Numeriskt_A"},
-                                {"id": 7370, "namn": "2.35", "typ": "Numeriskt_A"},
-
-                                {"id": 7410, "namn": "3.1+", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7411, "namn": "3.2+", "typ": "Numeriskt_A"},
-                                {"id": 7510, "namn": "3.2-", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7412, "namn": "3.3+", "typ": "Numeriskt_A"},
-                                {"id": 7413, "namn": "3.4+", "typ": "Numeriskt_A"},
-                                {"id": 7511, "namn": "3.5-", "typ": "Numeriskt_A"},
-                                {"id": 7512, "namn": "3.6-", "typ": "Numeriskt_A"},
-                                {"id": 7513, "namn": "3.7-", "typ": "Numeriskt_A"},
-                                {"id": 7514, "namn": "3.8-", "typ": "Numeriskt_A"},
-                                {"id": 7515, "namn": "3.9-", "typ": "Numeriskt_A"},
-                                {"id": 7535, "namn": "3.10-", "typ": "Numeriskt_A"},
-				
-				{"id": 7414, "namn": "3.11+", "typ": "Numeriskt_A"},
-                                {"id": 7518, "namn": "3.11+", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7415, "namn": "3.12+", "typ": "Numeriskt_A"},
-                                {"id": 7519, "namn": "3.12-", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7416, "namn": "3.13+", "typ": "Numeriskt_A"},
-                                {"id": 7520, "namn": "3.13-", "typ": "Numeriskt_A"},
-                                
-				{"id": 7417, "namn": "3.14+", "typ": "Numeriskt_A"},
-
-                                {"id": 7521, "namn": "3.15-", "typ": "Numeriskt_A"},
-				{"id": 7522, "namn": "3.16", "typ": "Numeriskt_A"},
-
-                                {"id": 7427, "namn": "3.17+", "typ": "Numeriskt_B"},
-				{"id": 7537, "namn": "3.17-", "typ": "Numeriskt_B"},
-
-                                {"id": 7450, "namn": "3.18=+", "typ": "Numeriskt_B"},
-                                {"id": 7550, "namn": "3.19=-", "typ": "Numeriskt_B"}],
-
-				"INK4S-2013": [
-                                {"id": 7011, "namn": "Räkenskapsår Fr.o.m",  "typ": "Datum_A"}, 
-                                {"id": 7012, "namn": "Räkenskapsår T.o.m",  "typ": "Datum_A"}, 
-
-                                {"id": 7650, "namn": "4.1+", "typ": "Numeriskt_B"},
-                                {"id": 7750, "namn": "4.2-", "typ": "Numeriskt_B"},
-                                
-                                {"id": 7652, "namn": "4.3a+", "typ": "Numeriskt_A"},
-                                {"id": 7653, "namn": "4.3b+", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7761, "namn": "4.4a-", "typ": "Numeriskt_B"},
-                                {"id": 7764, "namn": "4.4b-", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7752, "namn": "4.5a-", "typ": "Numeriskt_A"},
-                                {"id": 7754, "namn": "4.5b-", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7662, "namn": "4.6a+", "typ": "Numeriskt_A"},
-                                {"id": 7668, "namn": "4.6b+", "typ": "Numeriskt_A"},
-                                {"id": 7665, "namn": "4.6c+", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7766, "namn": "4.7a-", "typ": "Numeriskt_A"},
-                                
-                                {"id": 7741, "namn": "4.8a-", "typ": "Numeriskt_A"},
-                                {"id": 7642, "namn": "4.8b+", "typ": "Numeriskt_B"},
-                                {"id": 7641, "namn": "4.8c+", "typ": "Numeriskt_B"},
-                                {"id": 7742, "namn": "4.8d-", "typ": "Numeriskt_A"},
-
-                                {"id": 7666, "namn": "4.9+", "typ": "Numeriskt_B"},
-                                {"id": 7765, "namn": "4.9-", "typ": "Numeriskt_B"},
-
-                                {"id": 7767, "namn": "4.10a-", "typ": "Numeriskt_B"},
-                                {"id": 7669, "namn": "4.10b+", "typ": "Numeriskt_B"},
-                                
-                                {"id": 7768, "namn": "4.11a-", "typ": "Numeriskt_A"},
-                                {"id": 7643, "namn": "4.11b+", "typ": "Numeriskt_A"},
-
-                                {"id": 7670, "namn": "4.12+", "typ": "Numeriskt_A"},
-                                {"id": 7770, "namn": "4.13-", "typ": "Numeriskt_A"},
-                                
-                                {"id": 8020, "namn": "4.14", "typ": "Numeriskt_A"},
-                                {"id": 8021, "namn": "4.15", "typ": "Numeriskt_A"},
-                                
-                                {"id": 8040, "namn": "Redovisningskonsult JA", "typ": "Str_X"},
-                                {"id": 8041, "namn": "Redovisningskonsult NEJ", "typ": "Str_X"},
-
-                                {"id": 8044, "namn": "Revision JA", "typ": "Str_X"},
-				{"id": 8045, "namn": "Revision NEJ", "typ": "Str_X"}],
-
-				"INK4DU-2013": [
-                                {"id": 7011, "namn": "Räkenskapsår Fr.o.m",  "typ": "Datum_A"}, 
-                                {"id": 7012, "namn": "Räkenskapsår T.o.m",  "typ": "Datum_A"}, 
-
-                                {"id": 8100, "namn": "Person-/organisationsnr", "typ": "Orgnr_Id"},
-                                {"id": 8101, "namn": "Resultat summa överskott", "typ": "Numeriskt_B"},
-                                {"id": 8102, "namn": "Resultat summa underskott", "typ": "Numeriskt_B"},
-                                {"id": 8103, "namn": "Delägarens tillskott", "typ": "Numeriskt_B"},
-                                {"id": 8104, "namn": "Delägarens uttag", "typ": "Numeriskt_B"},
-                                {"id": 8105, "namn": "Andel avdragen arbetsgivaravgift", "typ": "Numeriskt_B"},
-
-                                {"id": 8100, "namn": "Person-/organisationsnr", "typ": "Orgnr_Id"},
-                                {"id": 8101, "namn": "Resultat summa överskott", "typ": "Numeriskt_B"},
-                                {"id": 8102, "namn": "Resultat summa underskott", "typ": "Numeriskt_B"},
-                                {"id": 8103, "namn": "Delägarens tillskott", "typ": "Numeriskt_B"},
-                                {"id": 8104, "namn": "Delägarens uttag", "typ": "Numeriskt_B"},
-                                {"id": 8105, "namn": "Andel avdragen arbetsgivaravgift", "typ": "Numeriskt_B"},
-
-                                {"id": 8100, "namn": "Person-/organisationsnr", "typ": "Orgnr_Id"},
-                                {"id": 8101, "namn": "Resultat summa överskott", "typ": "Numeriskt_B"},
-                                {"id": 8102, "namn": "Resultat summa underskott", "typ": "Numeriskt_B"},
-                                {"id": 8103, "namn": "Delägarens tillskott", "typ": "Numeriskt_B"},
-                                {"id": 8104, "namn": "Delägarens uttag", "typ": "Numeriskt_B"},
-                                {"id": 8105, "namn": "Andel avdragen arbetsgivaravgift", "typ": "Numeriskt_B"},
-
-                                {"id": 8100, "namn": "Person-/organisationsnr", "typ": "Orgnr_Id"},
-                                {"id": 8101, "namn": "Resultat summa överskott", "typ": "Numeriskt_B"},
-                                {"id": 8102, "namn": "Resultat summa underskott", "typ": "Numeriskt_B"},
-                                {"id": 8103, "namn": "Delägarens tillskott", "typ": "Numeriskt_B"},
-                                {"id": 8104, "namn": "Delägarens uttag", "typ": "Numeriskt_B"},
-                                {"id": 8105, "namn": "Andel avdragen arbetsgivaravgift", "typ": "Numeriskt_B"},
-
-                                {"id": 8100, "namn": "Person-/organisationsnr", "typ": "Orgnr_Id"},
-                                {"id": 8101, "namn": "Resultat summa överskott", "typ": "Numeriskt_B"},
-                                {"id": 8102, "namn": "Resultat summa underskott", "typ": "Numeriskt_B"},
-                                {"id": 8103, "namn": "Delägarens tillskott", "typ": "Numeriskt_B"},
-                                {"id": 8104, "namn": "Delägarens uttag", "typ": "Numeriskt_B"},
-                                {"id": 8105, "namn": "Andel avdragen arbetsgivaravgift", "typ": "Numeriskt_B"},
-
-                                {"id": 8100, "namn": "Person-/organisationsnr", "typ": "Orgnr_Id"},
-                                {"id": 8101, "namn": "Resultat summa överskott", "typ": "Numeriskt_B"},
-                                {"id": 8102, "namn": "Resultat summa underskott", "typ": "Numeriskt_B"},
-                                {"id": 8103, "namn": "Delägarens tillskott", "typ": "Numeriskt_B"},
-                                {"id": 8104, "namn": "Delägarens uttag", "typ": "Numeriskt_B"},
-                                {"id": 8105, "namn": "Andel avdragen arbetsgivaravgift", "typ": "Numeriskt_B"},
-
-                                {"id": 8100, "namn": "Person-/organisationsnr", "typ": "Orgnr_Id"},
-                                {"id": 8101, "namn": "Resultat summa överskott", "typ": "Numeriskt_B"},
-                                {"id": 8102, "namn": "Resultat summa underskott", "typ": "Numeriskt_B"},
-                                {"id": 8103, "namn": "Delägarens tillskott", "typ": "Numeriskt_B"},
-                                {"id": 8104, "namn": "Delägarens uttag", "typ": "Numeriskt_B"},
-                                {"id": 8105, "namn": "Andel avdragen arbetsgivaravgift", "typ": "Numeriskt_B"},
-
-                                {"id": 8100, "namn": "Person-/organisationsnr", "typ": "Orgnr_Id"},
-                                {"id": 8101, "namn": "Resultat summa överskott", "typ": "Numeriskt_B"},
-                                {"id": 8102, "namn": "Resultat summa underskott", "typ": "Numeriskt_B"},
-                                {"id": 8103, "namn": "Delägarens tillskott", "typ": "Numeriskt_B"},
-                                {"id": 8104, "namn": "Delägarens uttag", "typ": "Numeriskt_B"},
-                                {"id": 8105, "namn": "Andel avdragen arbetsgivaravgift", "typ": "Numeriskt_B"},
-
-                                {"id": 8100, "namn": "Person-/organisationsnr", "typ": "Orgnr_Id"},
-                                {"id": 8101, "namn": "Resultat summa överskott", "typ": "Numeriskt_B"},
-                                {"id": 8102, "namn": "Resultat summa underskott", "typ": "Numeriskt_B"},
-                                {"id": 8103, "namn": "Delägarens tillskott", "typ": "Numeriskt_B"},
-                                {"id": 8104, "namn": "Delägarens uttag", "typ": "Numeriskt_B"},
-                                {"id": 8105, "namn": "Andel avdragen arbetsgivaravgift", "typ": "Numeriskt_B"},
-
-                                {"id": 8100, "namn": "Person-/organisationsnr", "typ": "Orgnr_Id"},
-                                {"id": 8101, "namn": "Resultat summa överskott", "typ": "Numeriskt_B"},
-                                {"id": 8102, "namn": "Resultat summa underskott", "typ": "Numeriskt_B"},
-                                {"id": 8103, "namn": "Delägarens tillskott", "typ": "Numeriskt_B"},
-                                {"id": 8104, "namn": "Delägarens uttag", "typ": "Numeriskt_B"},
-                                {"id": 8105, "namn": "Andel avdragen arbetsgivaravgift", "typ": "Numeriskt_B"},
-
-                                {"id": 8100, "namn": "Person-/organisationsnr", "typ": "Orgnr_Id"},
-                                {"id": 8101, "namn": "Resultat summa överskott", "typ": "Numeriskt_B"},
-                                {"id": 8102, "namn": "Resultat summa underskott", "typ": "Numeriskt_B"},
-                                {"id": 8103, "namn": "Delägarens tillskott", "typ": "Numeriskt_B"},
-                                {"id": 8104, "namn": "Delägarens uttag", "typ": "Numeriskt_B"},
-                                {"id": 8105, "namn": "Andel avdragen arbetsgivaravgift", "typ": "Numeriskt_B"},
-
-                                {"id": 8100, "namn": "Person-/organisationsnr", "typ": "Orgnr_Id"},
-                                {"id": 8101, "namn": "Resultat summa överskott", "typ": "Numeriskt_B"},
-                                {"id": 8102, "namn": "Resultat summa underskott", "typ": "Numeriskt_B"},
-                                {"id": 8103, "namn": "Delägarens tillskott", "typ": "Numeriskt_B"},
-                                {"id": 8104, "namn": "Delägarens uttag", "typ": "Numeriskt_B"},
-                                {"id": 8105, "namn": "Andel avdragen arbetsgivaravgift", "typ": "Numeriskt_B"},
-
-                                {"id": 8100, "namn": "Person-/organisationsnr", "typ": "Orgnr_Id"},
-                                {"id": 8101, "namn": "Resultat summa överskott", "typ": "Numeriskt_B"},
-                                {"id": 8102, "namn": "Resultat summa underskott", "typ": "Numeriskt_B"},
-                                {"id": 8103, "namn": "Delägarens tillskott", "typ": "Numeriskt_B"},
-                                {"id": 8104, "namn": "Delägarens uttag", "typ": "Numeriskt_B"},
-                                {"id": 8105, "namn": "Andel avdragen arbetsgivaravgift", "typ": "Numeriskt_B"},
-
-                                {"id": 8100, "namn": "Person-/organisationsnr", "typ": "Orgnr_Id"},
-                                {"id": 8101, "namn": "Resultat summa överskott", "typ": "Numeriskt_B"},
-                                {"id": 8102, "namn": "Resultat summa underskott", "typ": "Numeriskt_B"},
-                                {"id": 8103, "namn": "Delägarens tillskott", "typ": "Numeriskt_B"},
-                                {"id": 8104, "namn": "Delägarens uttag", "typ": "Numeriskt_B"},
-                                {"id": 8105, "namn": "Andel avdragen arbetsgivaravgift", "typ": "Numeriskt_B"},
-
-                                {"id": 8100, "namn": "Person-/organisationsnr", "typ": "Orgnr_Id"},
-                                {"id": 8101, "namn": "Resultat summa överskott", "typ": "Numeriskt_B"},
-                                {"id": 8102, "namn": "Resultat summa underskott", "typ": "Numeriskt_B"},
-                                {"id": 8103, "namn": "Delägarens tillskott", "typ": "Numeriskt_B"},
-                                {"id": 8104, "namn": "Delägarens uttag", "typ": "Numeriskt_B"},
-                                {"id": 8105, "namn": "Andel avdragen arbetsgivaravgift", "typ": "Numeriskt_B"},
-
-                                {"id": 8100, "namn": "Person-/organisationsnr", "typ": "Orgnr_Id"},
-                                {"id": 8101, "namn": "Resultat summa överskott", "typ": "Numeriskt_B"},
-                                {"id": 8102, "namn": "Resultat summa underskott", "typ": "Numeriskt_B"},
-                                {"id": 8103, "namn": "Delägarens tillskott", "typ": "Numeriskt_B"},
-                                {"id": 8104, "namn": "Delägarens uttag", "typ": "Numeriskt_B"},
-                                {"id": 8105, "namn": "Andel avdragen arbetsgivaravgift", "typ": "Numeriskt_B"}]
-                        };
-
                 </script>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
